@@ -1,0 +1,123 @@
+.navbar {
+  position: fixed;
+  width: 100%;
+  padding: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+  border-bottom: none;
+}
+
+.navbar-container {
+  max-width: 100%;
+  padding: 0.5rem 5%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: 800;
+  text-decoration: none;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 2px #ffe81f;
+  paint-order: stroke fill;
+  font-family: "Bebas Neue", "Impact", "Arial Black", Arial, sans-serif;
+}
+
+.logo-image {
+  height: 140px;
+  width: auto;
+  object-fit: cover;
+  object-position: center;
+  clip-path: inset(25% 0 25% 0);
+}
+
+.nav-menu {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: rgba(20, 24, 40, 0.35); /* subtle translucent */
+  backdrop-filter: blur(8px);
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.nav-link {
+  color: #eef2ff; /* brighter for readability */
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  position: relative;
+  transition: all 0.3s ease;
+  padding: 0.7rem 1.2rem;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+}
+
+.nav-link:hover {
+  background: rgba(99, 102, 241, 0.2);
+  color: #fff;
+}
+
+.nav-menu li:first-child .nav-link {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.nav-menu li:first-child .nav-link:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.mobile-menu-icon {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--light);
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+@media (max-width: 768px) {
+  .nav-menu {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    flex-direction: column;
+    background: rgba(15, 23, 42, 0.98);
+    width: 100%;
+    height: 100vh;
+    text-align: center;
+    transition: left 0.3s ease;
+    padding-top: 100px;
+    gap: 2rem;
+  }
+
+  .nav-menu.active {
+    left: 0;
+  }
+
+  .mobile-menu-icon {
+    display: block;
+  }
+
+  .nav-link {
+    font-size: 1.5rem;
+  }
+}

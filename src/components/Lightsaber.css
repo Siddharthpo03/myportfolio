@@ -1,0 +1,102 @@
+.saber-container {
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* ==========================
+   LIGHTSABER BLADE
+   ========================== */
+.saber-blade {
+  width: 22px;
+  height: 0px; /* starts retracted */
+  border-radius: 14px;
+  background: var(--blade-color);
+  box-shadow: 0 0 25px var(--blade-color), 0 0 50px var(--blade-color),
+    0 0 85px rgba(0, 200, 255, 0.8), inset 0 0 12px white,
+    inset 0 0 18px var(--blade-color);
+
+  transition: height 0.7s cubic-bezier(0.2, 0.8, 0.3, 1),
+    opacity 0.3s ease-in-out;
+
+  opacity: 0;
+}
+
+.saber-blade.ignite {
+  height: var(--blade-height, 350px);
+  opacity: 1;
+  animation: bladePulse 1.4s infinite ease-in-out;
+}
+
+/* Small hologram flicker */
+@keyframes bladePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 25px var(--blade-color), 0 0 60px var(--blade-color),
+      0 0 95px rgba(0, 200, 255, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 35px var(--blade-color), 0 0 75px var(--blade-color),
+      0 0 120px rgba(0, 200, 255, 0.8);
+  }
+}
+
+/* ==========================
+   LIGHTSABER HANDLE
+   ========================== */
+.saber-handle {
+  width: 40px;
+  height: 80px;
+  background: linear-gradient(180deg, #222, #111);
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+  cursor: none;
+  position: relative;
+  overflow: hidden;
+  transition: 0.25s ease-in-out;
+}
+
+/* Top emitter area */
+.handle-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 18px;
+  background: #333;
+  border-bottom: 2px solid #555;
+}
+
+/* Grip */
+.handle-grip {
+  position: absolute;
+  top: 18px;
+  left: 0;
+  width: 100%;
+  height: 44px;
+  background: repeating-linear-gradient(
+    90deg,
+    #181818,
+    #181818 5px,
+    #0f0f0f 5px,
+    #0f0f0f 10px
+  );
+}
+
+/* Bottom cap */
+.handle-bottom {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 18px;
+  background: #444;
+  border-top: 2px solid #666;
+}
+
+/* Hover effect */
+.saber-handle:hover {
+  box-shadow: 0 0 15px var(--blade-color);
+  transform: scale(1.05);
+}

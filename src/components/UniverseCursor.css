@@ -1,0 +1,192 @@
+.universe-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 2000;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Death Star core */
+.death-star {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  background: radial-gradient(
+    circle at 35% 35%,
+    #8b9dc3 0%,
+    #4a5568 40%,
+    #1a1f2e 70%,
+    transparent 85%
+  );
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(139, 157, 195, 0.6), 0 0 16px rgba(0, 217, 255, 0.3),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.5);
+  animation: deathStarPulse 4s ease-in-out infinite;
+}
+
+@keyframes deathStarPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(139, 157, 195, 0.6),
+      0 0 16px rgba(0, 217, 255, 0.3), inset -2px -2px 4px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    transform: scale(0.9);
+    box-shadow: 0 0 12px rgba(139, 157, 195, 0.8),
+      0 0 24px rgba(0, 217, 255, 0.5), inset -2px -2px 4px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Orbits */
+.uc-orbit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  animation: ucSpin linear infinite;
+}
+
+.orbit-1 {
+  width: 35px;
+  height: 35px;
+  margin: -17.5px 0 0 -17.5px;
+  animation-duration: 6s;
+}
+.orbit-2 {
+  width: 55px;
+  height: 55px;
+  margin: -27.5px 0 0 -27.5px;
+  animation-duration: 9s;
+  animation-direction: reverse;
+}
+
+@keyframes ucSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* TIE Fighters */
+.uc-fighter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateX(var(--offset));
+  width: 6px;
+  height: 4px;
+  background: linear-gradient(90deg, #4a5568 0%, #8b9dc3 50%, #4a5568 100%);
+  box-shadow: 0 0 6px rgba(139, 157, 195, 0.8), 0 0 3px rgba(0, 217, 255, 0.6);
+  border-radius: 1px;
+}
+
+.uc-fighter::before,
+.uc-fighter::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 3px;
+  height: 6px;
+  background: rgba(139, 157, 195, 0.4);
+  margin-top: -3px;
+  box-shadow: 0 0 4px rgba(0, 217, 255, 0.4);
+}
+
+.uc-fighter::before {
+  left: -2px;
+}
+.uc-fighter::after {
+  right: -2px;
+}
+
+.tie-fighter-1 {
+  --offset: 17.5px;
+}
+.tie-fighter-2 {
+  --offset: 27.5px;
+}
+
+/* Hyperspace streaks */
+.hyperspace-streak {
+  position: absolute;
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 217, 255, 0.8) 50%,
+    transparent 100%
+  );
+  box-shadow: 0 0 4px rgba(0, 217, 255, 0.6);
+  animation: hyperspaceMove 2.5s linear infinite;
+  opacity: 0.7;
+}
+
+.streak-1 {
+  top: -15px;
+  left: 8px;
+  animation-delay: 0s;
+}
+.streak-2 {
+  top: -18px;
+  left: -6px;
+  animation-delay: 0.8s;
+}
+.streak-3 {
+  top: -12px;
+  left: 2px;
+  animation-delay: 1.6s;
+}
+
+@keyframes hyperspaceMove {
+  0% {
+    transform: translateY(0) scaleY(0.5);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(35px) scaleY(1.5);
+    opacity: 0;
+  }
+}
+
+/* Lightsaber glow ring */
+.lightsaber-glow {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border: 1px solid rgba(0, 217, 255, 0.4);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 217, 255, 0.5),
+    inset 0 0 8px rgba(0, 217, 255, 0.3);
+  animation: saber-glow 2.8s ease-in-out infinite;
+}
+
+@keyframes saber-glow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.85;
+  }
+}
+
+/* Mobile disable (keeps DOM minimal) */
+@media (max-width: 768px) {
+  .universe-cursor {
+    display: none;
+  }
+}

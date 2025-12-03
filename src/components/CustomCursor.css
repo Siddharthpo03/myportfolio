@@ -1,0 +1,66 @@
+.cursor,
+.cursor-follower {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+}
+
+.cursor {
+  width: 20px;
+  height: 20px;
+  background: var(--neon-blue);
+  will-change: transform;
+  box-shadow: 0 0 12px rgba(0, 217, 255, 0.5);
+}
+
+.cursor-follower {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--neon-blue);
+  background: transparent;
+  will-change: transform;
+  box-shadow: 0 0 10px rgba(0, 217, 255, 0.4);
+}
+
+.cursor-glow {
+  position: fixed;
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(
+    circle,
+    rgba(0, 217, 255, 0.18) 0%,
+    rgba(255, 0, 234, 0.12) 25%,
+    rgba(0, 255, 136, 0.08) 50%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  transition: opacity 0.3s ease;
+  opacity: 0.65;
+  filter: blur(30px);
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@media (max-width: 768px) {
+  .cursor,
+  .cursor-follower,
+  .cursor-glow {
+    display: none;
+  }
+}

@@ -1,0 +1,10 @@
+QUICK FIX - Make name lines touch:
+
+In src/components/Hero.css, find .hero-name and change:
+  line-height: 0.75;
+TO:
+  line-height: 0.5;
+
+Also in the @media queries, change all line-height values to 0.5
+
+This will make "Siddharth" and "Pulugujja" touch/overlap.

@@ -1,0 +1,53 @@
+.falcon-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 72px;
+  height: 72px;
+  transform: translate3d(-9999px, -9999px, 0);
+  will-change: transform;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.falcon-cursor img {
+  width: 40px;
+  height: 40px;
+  filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.8));
+}
+/* Performance toggle removed: keep single smooth configuration */
+
+.falcon-thruster {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26px;
+  height: 26px;
+  transform: translate(-50%, -50%) translateY(26px);
+  background: radial-gradient(
+    circle,
+    rgba(0, 217, 255, 0.9),
+    rgba(0, 217, 255, 0.3) 40%,
+    transparent 70%
+  );
+  opacity: calc(var(--thrust, 0));
+  filter: blur(18px);
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.falcon-svg {
+  width: 72px;
+  height: 72px;
+  display: block;
+  filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.7));
+}
+
+/* Performance toggle removed */
+
+@media (max-width: 768px) {
+  .falcon-cursor {
+    display: none;
+  }
+}
