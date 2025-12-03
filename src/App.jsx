@@ -35,16 +35,21 @@ function App() {
     audio.volume = 0.5;
     audio.play().catch(() => {}); // Catch in case autoplay is blocked
     
-    // Request fullscreen immediately on user interaction
+    // Request fullscreen with mobile support
     const elem = document.documentElement;
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen().catch(() => {});
-    } else if (elem.mozRequestFullScreen) {
-      elem.mozRequestFullScreen();
-    } else if (elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      elem.msRequestFullscreen();
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (!isMobile) {
+      // Fullscreen only on desktop (mobile browsers often don't support it)
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      } else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      }
     }
     
     // Start the sequence
@@ -117,11 +122,12 @@ function App() {
           <h1
             style={{
               fontFamily: "Bebas Neue, Impact, Arial Black, Arial, sans-serif",
-              fontSize: "4rem",
+              fontSize: "clamp(2rem, 8vw, 4rem)",
               color: "#ffe81f",
               textTransform: "uppercase",
               marginBottom: "2rem",
               textShadow: "0 0 20px rgba(255, 232, 31, 0.5)",
+              padding: "0 1rem",
             }}
           >
             Ready for Hyperspace?
@@ -129,8 +135,8 @@ function App() {
           <button
             onClick={handleStartJourney}
             style={{
-              padding: "1.5rem 3rem",
-              fontSize: "1.5rem",
+              padding: "clamp(1rem, 3vw, 1.5rem) clamp(2rem, 6vw, 3rem)",
+              fontSize: "clamp(1.1rem, 4vw, 1.5rem)",
               fontFamily: "Orbitron, sans-serif",
               fontWeight: 600,
               background: "linear-gradient(135deg, #00d9ff 0%, #ff00ea 100%)",
@@ -143,6 +149,8 @@ function App() {
               transition: "all 0.3s ease",
               textTransform: "uppercase",
               letterSpacing: "2px",
+              touchAction: "manipulation",
+              WebkitTapHighlightColor: "transparent",
             }}
             onMouseEnter={(e) => {
               e.target.style.transform = "scale(1.1)";
@@ -161,11 +169,12 @@ function App() {
             style={{
               marginTop: "1.5rem",
               color: "#8b9dc3",
-              fontSize: "0.9rem",
+              fontSize: "clamp(0.8rem, 2.5vw, 0.9rem)",
               fontFamily: "Orbitron, sans-serif",
+              padding: "0 1rem",
             }}
           >
-            Click to begin your journey in fullscreen mode
+            {window.innerWidth <= 768 ? "Tap to begin your journey" : "Click to begin your journey in fullscreen mode"}
           </p>
         </motion.div>
       </div>

@@ -335,7 +335,41 @@ section {
   }
 
   body {
-    cursor: auto;
+    cursor: auto !important;
+  }
+  
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  [role="button"],
+  .cursor-hover {
+    cursor: auto !important;
+  }
+  
+  /* Optimize text rendering on mobile */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Prevent text size adjust on orientation change */
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  /* Improve tap targets */
+  button, a, input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Optimize animations for mobile */
+  * {
+    animation-duration: 0.5s !important;
+    transition-duration: 0.3s !important;
   }
 }
 

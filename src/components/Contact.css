@@ -200,6 +200,15 @@ textarea.form-input {
   .contact-info h3 {
     font-size: 1.5rem;
   }
+  
+  .contact-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .contact-info > p {
+    font-size: 1rem;
+  }
 
   .contact-form {
     padding: 1.5rem;
@@ -207,5 +216,10 @@ textarea.form-input {
 
   .form-input {
     padding: 0.875rem 1.25rem;
+    font-size: 1rem;
+  }
+  
+  .contact-socials {
+    justify-content: center;
   }
 }

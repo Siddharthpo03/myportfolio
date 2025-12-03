@@ -5,6 +5,37 @@ import "./Starfield.css";
 const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
   const videoRef = React.useRef(null);
   const canvasRef = React.useRef(null);
+  const audioRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (hyperspaceMode && videoRef.current) {
+      const video = videoRef.current;
+      
+      // Detect mobile
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        // On mobile, start muted then unmute after user gesture
+        video.muted = true;
+        video.play().then(() => {
+          // Try to unmute after playback starts
+          setTimeout(() => {
+            video.muted = false;
+          }, 100);
+        }).catch(err => {
+          console.log('Mobile autoplay handled:', err);
+        });
+      } else {
+        // Desktop: play with sound
+        video.muted = false;
+        video.play().catch(err => {
+          console.log('Autoplay fallback:', err);
+          video.muted = true;
+          video.play();
+        });
+      }
+    }
+  }, [hyperspaceMode]);
 
   const captureFrame = () => {
     if (videoRef.current && canvasRef.current) {
@@ -43,10 +74,13 @@ const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
           className="starfield-video"
           src={hyperspaceVideo}
           autoPlay
-          muted={false}
           playsInline
           preload="auto"
           onEnded={handleVideoEnded}
+          webkit-playsinline="true"
+          x5-playsinline="true"
+          x5-video-player-type="h5"
+          x5-video-player-fullscreen="true"
           style={{
             position: "fixed",
             top: 0,
