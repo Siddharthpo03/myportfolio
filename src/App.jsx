@@ -61,14 +61,20 @@ function App() {
   useEffect(() => {
     if (!startClicked) return;
 
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const welcomeDuration = 4000;
+    const falconDuration = isMobile ? 1500 : 2000; // Shorter on mobile
+
     // Welcome screen for 4s
     const timer1 = setTimeout(() => {
       setLoadingStage("falcon");
-    }, 4000);
-    // Falcon image for 2s
+    }, welcomeDuration);
+    
+    // Falcon image for 1.5s (mobile) or 2s (desktop)
     const timer2 = setTimeout(() => {
       setLoadingStage("hyperspace");
-    }, 6000);
+    }, welcomeDuration + falconDuration);
+    
     // Hyperspace duration controlled by video end event
 
     return () => {

@@ -12,6 +12,10 @@ const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
     if (hyperspaceMode && videoRef.current) {
       const video = videoRef.current;
       hasEndedRef.current = false;
+      
+      // Explicitly disable looping
+      video.loop = false;
+      video.currentTime = 0;
 
       // Detect mobile
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -80,6 +84,12 @@ const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
       clearTimeout(timeoutRef.current);
     }
     
+    // Stop video immediately
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = videoRef.current.duration;
+    }
+    
     let tries = 5;
     const attemptCapture = () => {
       const frame = captureFrame();
@@ -105,8 +115,29 @@ const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
           autoPlay
           playsInline
           preload="auto"
-          loop={false}
+          onLoadedMetadata={(e) => {
+            // Ensure loop is disabled when metadata loads
+            e.target.loop = false;
+          }}
+          onCanPlay={(e) => {
+            // Ensure loop is disabled when video is ready to play
+            e.target.loop = false;
+          }}
           onEnded={handleVideoEnded}
+          onTimeUpdate={(e) => {
+            // Detect if video is trying to loop (currentTime goes backward after playing)
+            if (hasEndedRef.current === false && e.target.duration > 0) {
+              // If we're near the end and haven't ended yet, watch for reset
+              if (e.target.currentTime > e.target.duration * 0.95) {
+                // Near end, set flag
+                e.target._nearEnd = true;
+              } else if (e.target._nearEnd && e.target.currentTime < 1 && e.target.played.length > 0) {
+                // Video reset to beginning - it's trying to loop!
+                console.log('Video attempting to loop - stopping it');
+                handleVideoEnded();
+              }
+            }
+          }}
           onError={(e) => {
             console.error('Video error:', e);
             // Fallback: end immediately on error

@@ -3,13 +3,16 @@ import wallpaperImg from "../assets/wallpapers.png";
 import "./FalconTransition.css";
 
 const FalconTransition = () => {
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const animationDuration = isMobile ? 0.3 : 0.5;
+  const imageDuration = isMobile ? 0.5 : 1;
+
   return (
     <motion.div
       className="falcon-transition"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
+      transition={{ duration: animationDuration, ease: "easeInOut" }}
     >
       <div
         className="falcon-background"
@@ -29,9 +32,8 @@ const FalconTransition = () => {
           src={wallpaperImg}
           alt="Millennium Falcon Cockpit"
           initial={{ scale: 1 }}
-          animate={{ scale: 1.2 }}
-          exit={{ scale: 1.4, opacity: 0 }}
-          transition={{ duration: 1, ease: "easeInOut" }}
+          animate={{ scale: isMobile ? 1.1 : 1.2 }}
+          transition={{ duration: imageDuration, ease: "easeInOut" }}
           style={{
             maxWidth: "90%",
             maxHeight: "90%",
