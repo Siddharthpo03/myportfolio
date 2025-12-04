@@ -69,11 +69,13 @@ function App() {
     const timer2 = setTimeout(() => {
       setLoadingStage("hyperspace");
     }, 6000);
-    // Safety timeout for mobile - max 15s for hyperspace
+    // Safety timeout: force end hyperspace after 15s if video doesn't end
     const safetyTimer = setTimeout(() => {
-      console.log("Safety timeout - ending hyperspace");
-      setLoadingStage("done");
-    }, 21000); // 6s delay + 15s max hyperspace
+      if (loadingStage === "hyperspace") {
+        console.log("Safety timeout: forcing hyperspace end");
+        setLoadingStage("done");
+      }
+    }, 21000); // 6s (start) + 15s (max video duration)
 
     return () => {
       clearTimeout(timer1);
@@ -81,7 +83,7 @@ function App() {
       clearTimeout(safetyTimer);
       document.body.style.overflow = "";
     };
-  }, [startClicked]);
+  }, [startClicked, loadingStage]);
 
   useEffect(() => {
     if (

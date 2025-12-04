@@ -10,28 +10,51 @@ const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
   React.useEffect(() => {
     if (hyperspaceMode && videoRef.current) {
       const video = videoRef.current;
+
+      // Detect mobile
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
+      // Add error handler
       const handleError = () => {
-        console.error('Video failed to load');
-        // Trigger end immediately if video errors
-        setTimeout(() => {
-          if (onVideoEnd) onVideoEnd(null);
-        }, 1000);
+        console.error('Video error, forcing end');
+        if (onVideoEnd) {
+          onVideoEnd(null);
+        }
       };
-
+      
       video.addEventListener('error', handleError);
 
-      // Simple play - muted for autoplay compatibility
-      video.muted = true;
-      video.play().catch((err) => {
-        console.log("Autoplay blocked:", err);
-        // If play fails, trigger end after delay
-        setTimeout(() => {
-          if (onVideoEnd) onVideoEnd(null);
-        }, 2000);
-      });
-
+      if (isMobile) {
+        // On mobile, start muted then unmute after user gesture
+        video.muted = true;
+        video
+          .play()
+          .then(() => {
+            // Try to unmute after playback starts
+            setTimeout(() => {
+              video.muted = false;
+            }, 100);
+          })
+          .catch((err) => {
+            console.log("Mobile autoplay handled:", err);
+            // If video fails to play, force end after 5s
+            setTimeout(() => {
+              if (onVideoEnd) onVideoEnd(null);
+            }, 5000);
+          });
+      } else {
+        // Desktop: play with sound
+        video.muted = false;
+        video.play().catch((err) => {
+          console.log("Autoplay fallback:", err);
+          video.muted = true;
+          video.play().catch(() => {
+            // If all fails, force end
+            if (onVideoEnd) onVideoEnd(null);
+          });
+        });
+      }
+      
       return () => {
         video.removeEventListener('error', handleError);
       };
@@ -75,16 +98,22 @@ const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
           className="starfield-video"
           src={hyperspaceVideo}
           autoPlay
-          muted
           playsInline
           preload="auto"
           onEnded={handleVideoEnded}
-          onError={() => {
-            console.error('Video element error');
-            setTimeout(() => {
-              if (onVideoEnd) onVideoEnd(null);
-            }, 1000);
+          onLoadedMetadata={(e) => {
+            console.log('Video loaded, duration:', e.target.duration);
           }}
+          onTimeUpdate={(e) => {
+            // Force end if near completion
+            if (e.target.duration && e.target.currentTime >= e.target.duration - 0.5) {
+              handleVideoEnded();
+            }
+          }}
+          webkit-playsinline="true"
+          x5-playsinline="true"
+          x5-video-player-type="h5"
+          x5-video-player-fullscreen="true"
           style={{
             position: "fixed",
             top: 0,
