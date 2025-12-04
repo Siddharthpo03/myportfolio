@@ -10,32 +10,33 @@ const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
   React.useEffect(() => {
     if (hyperspaceMode && videoRef.current) {
       const video = videoRef.current;
-      
-      // Detect mobile
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      
-      if (isMobile) {
-        // On mobile, start muted then unmute after user gesture
-        video.muted = true;
-        video.play().then(() => {
-          // Try to unmute after playback starts
-          setTimeout(() => {
-            video.muted = false;
-          }, 100);
-        }).catch(err => {
-          console.log('Mobile autoplay handled:', err);
-        });
-      } else {
-        // Desktop: play with sound
-        video.muted = false;
-        video.play().catch(err => {
-          console.log('Autoplay fallback:', err);
-          video.muted = true;
-          video.play();
-        });
-      }
+
+      const handleError = () => {
+        console.error('Video failed to load');
+        // Trigger end immediately if video errors
+        setTimeout(() => {
+          if (onVideoEnd) onVideoEnd(null);
+        }, 1000);
+      };
+
+      video.addEventListener('error', handleError);
+
+      // Simple play - muted for autoplay compatibility
+      video.muted = true;
+      video.play().catch((err) => {
+        console.log("Autoplay blocked:", err);
+        // If play fails, trigger end after delay
+        setTimeout(() => {
+          if (onVideoEnd) onVideoEnd(null);
+        }, 2000);
+      });
+
+      return () => {
+        video.removeEventListener('error', handleError);
+      };
     }
-  }, [hyperspaceMode]);
+  }, [hyperspaceMode, onVideoEnd]);
 
   const captureFrame = () => {
     if (videoRef.current && canvasRef.current) {
@@ -43,9 +44,9 @@ const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
       const canvas = canvasRef.current;
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      return canvas.toDataURL('image/png');
+      return canvas.toDataURL("image/png");
     }
     return null;
   };
@@ -74,13 +75,16 @@ const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
           className="starfield-video"
           src={hyperspaceVideo}
           autoPlay
+          muted
           playsInline
           preload="auto"
           onEnded={handleVideoEnded}
-          webkit-playsinline="true"
-          x5-playsinline="true"
-          x5-video-player-type="h5"
-          x5-video-player-fullscreen="true"
+          onError={() => {
+            console.error('Video element error');
+            setTimeout(() => {
+              if (onVideoEnd) onVideoEnd(null);
+            }, 1000);
+          }}
           style={{
             position: "fixed",
             top: 0,
@@ -92,7 +96,7 @@ const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
             pointerEvents: "none",
           }}
         />
-        <canvas ref={canvasRef} style={{ display: 'none' }} />
+        <canvas ref={canvasRef} style={{ display: "none" }} />
       </>
     );
   }

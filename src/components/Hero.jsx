@@ -126,7 +126,7 @@ const Hero = () => {
             className="btn btn-primary cursor-hover"
             whileHover={{
               scale: 1.05,
-              boxShadow: "0 10px 40px rgba(99, 102, 241, 0.4)"
+              boxShadow: "0 10px 40px rgba(99, 102, 241, 0.4)",
             }}
             whileTap={{ scale: 0.95 }}
             onClick={() =>

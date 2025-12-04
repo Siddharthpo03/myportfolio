@@ -29,16 +29,18 @@ function App() {
 
   const handleStartJourney = () => {
     setStartClicked(true);
-    
+
     // Play hyperspace sound effect
-    const audio = new Audio('https://www.myinstants.com/media/sounds/star-wars-hyperspace.mp3');
+    const audio = new Audio(
+      "https://www.myinstants.com/media/sounds/star-wars-hyperspace.mp3"
+    );
     audio.volume = 0.5;
     audio.play().catch(() => {}); // Catch in case autoplay is blocked
-    
+
     // Request fullscreen with mobile support
     const elem = document.documentElement;
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    
+
     if (!isMobile) {
       // Fullscreen only on desktop (mobile browsers often don't support it)
       if (elem.requestFullscreen) {
@@ -51,7 +53,7 @@ function App() {
         elem.msRequestFullscreen();
       }
     }
-    
+
     // Start the sequence
     setLoadingStage("welcome");
   };
@@ -67,17 +69,26 @@ function App() {
     const timer2 = setTimeout(() => {
       setLoadingStage("hyperspace");
     }, 6000);
-    // Hyperspace duration controlled by video end event
+    // Safety timeout for mobile - max 15s for hyperspace
+    const safetyTimer = setTimeout(() => {
+      console.log("Safety timeout - ending hyperspace");
+      setLoadingStage("done");
+    }, 21000); // 6s delay + 15s max hyperspace
 
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
+      clearTimeout(safetyTimer);
       document.body.style.overflow = "";
     };
   }, [startClicked]);
 
   useEffect(() => {
-    if (loadingStage === "hyperspace" || loadingStage === "falcon" || loadingStage === "welcome") {
+    if (
+      loadingStage === "hyperspace" ||
+      loadingStage === "falcon" ||
+      loadingStage === "welcome"
+    ) {
       document.body.style.overflow = "hidden";
     } else if (loadingStage === "done") {
       document.body.style.overflow = "";
@@ -174,7 +185,9 @@ function App() {
               padding: "0 1rem",
             }}
           >
-            {window.innerWidth <= 768 ? "Tap to begin your journey" : "Click to begin your journey in fullscreen mode"}
+            {window.innerWidth <= 768
+              ? "Tap to begin your journey"
+              : "Click to begin your journey in fullscreen mode"}
           </p>
         </motion.div>
       </div>
@@ -197,7 +210,11 @@ function App() {
           exit={{ opacity: 0 }}
           transition={{ duration: 1 }}
         >
-          <Starfield density={0.75} hyperspaceMode={true} onVideoEnd={handleVideoEnd} />
+          <Starfield
+            density={0.75}
+            hyperspaceMode={true}
+            onVideoEnd={handleVideoEnd}
+          />
         </motion.div>
       )}
       {loadingStage === "done" && (

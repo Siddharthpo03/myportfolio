@@ -43,7 +43,11 @@ const LoadingScreen = ({ onWelcomeComplete }) => {
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            style={{ fontFamily: 'Bebas Neue, Impact, Arial Black, Arial, sans-serif', color: '#ffe81f', textShadow: '0 0 16px #ffe81f' }}
+            style={{
+              fontFamily: "Bebas Neue, Impact, Arial Black, Arial, sans-serif",
+              color: "#ffe81f",
+              textShadow: "0 0 16px #ffe81f",
+            }}
           >
             Welcome, Traveler.
           </motion.h1>
@@ -52,7 +56,11 @@ const LoadingScreen = ({ onWelcomeComplete }) => {
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 1.0, duration: 0.7 }}
-            style={{ fontFamily: 'Orbitron, Electrolize, Courier New, monospace', color: '#00d9ff', textShadow: '0 0 12px #00d9ff' }}
+            style={{
+              fontFamily: "Orbitron, Electrolize, Courier New, monospace",
+              color: "#00d9ff",
+              textShadow: "0 0 12px #00d9ff",
+            }}
           >
             Entering Siddharth’s Hydian Way…
           </motion.h2>
@@ -61,7 +69,11 @@ const LoadingScreen = ({ onWelcomeComplete }) => {
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 2.0, duration: 0.7 }}
-            style={{ fontFamily: 'Orbitron, Electrolize, Courier New, monospace', color: '#8b9dc3', textShadow: '0 0 8px #8b9dc3' }}
+            style={{
+              fontFamily: "Orbitron, Electrolize, Courier New, monospace",
+              color: "#8b9dc3",
+              textShadow: "0 0 8px #8b9dc3",
+            }}
           >
             Initializing systems… preparing hyperspace jump.
           </motion.h3>
