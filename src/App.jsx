@@ -72,7 +72,12 @@ function App() {
     
     // Falcon image for 1.5s (mobile) or 2s (desktop)
     const timer2 = setTimeout(() => {
-      setLoadingStage("hyperspace");
+      if (isMobile) {
+        // Skip hyperspace on mobile, go directly to content
+        setLoadingStage("done");
+      } else {
+        setLoadingStage("hyperspace");
+      }
     }, welcomeDuration + falconDuration);
     
     // Hyperspace duration controlled by video end event
