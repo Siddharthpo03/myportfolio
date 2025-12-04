@@ -44,7 +44,7 @@ const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
         });
       }
       
-      // Safety timeout: if video doesn't end naturally, force it after 35 seconds
+      // Safety timeout: if video doesn't end naturally, force it after 15 seconds
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
@@ -53,7 +53,7 @@ const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
           console.log('Video timeout - forcing end');
           handleVideoEnded();
         }
-      }, 35000);
+      }, 15000);
     }
     
     return () => {
@@ -143,6 +143,18 @@ const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
             onCanPlay={(e) => {
               console.log('Video can play');
               e.target.loop = false;
+              
+              // Once we know the duration, set a timeout based on it
+              if (e.target.duration && timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+                const duration = Math.ceil(e.target.duration * 1000) + 1000; // Add 1s buffer
+                timeoutRef.current = setTimeout(() => {
+                  if (!hasEndedRef.current) {
+                    console.log('Duration-based timeout - forcing end');
+                    handleVideoEnded();
+                  }
+                }, Math.min(duration, 15000)); // Max 15 seconds
+              }
             }}
             onPlay={(e) => {
               console.log('Video playing');
