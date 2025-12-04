@@ -107,59 +107,75 @@ const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
   if (hyperspaceMode) {
     return (
       <>
-        <video
-          ref={videoRef}
-          key="hyperspace-video"
-          className="starfield-video"
-          src={hyperspaceVideo}
-          autoPlay
-          playsInline
-          preload="auto"
-          onLoadedMetadata={(e) => {
-            // Ensure loop is disabled when metadata loads
-            e.target.loop = false;
-          }}
-          onCanPlay={(e) => {
-            // Ensure loop is disabled when video is ready to play
-            e.target.loop = false;
-          }}
-          onEnded={handleVideoEnded}
-          onTimeUpdate={(e) => {
-            // Detect if video is trying to loop (currentTime goes backward after playing)
-            if (hasEndedRef.current === false && e.target.duration > 0) {
-              // If we're near the end and haven't ended yet, watch for reset
-              if (e.target.currentTime > e.target.duration * 0.95) {
-                // Near end, set flag
-                e.target._nearEnd = true;
-              } else if (e.target._nearEnd && e.target.currentTime < 1 && e.target.played.length > 0) {
-                // Video reset to beginning - it's trying to loop!
-                console.log('Video attempting to loop - stopping it');
-                handleVideoEnded();
-              }
-            }
-          }}
-          onError={(e) => {
-            console.error('Video error:', e);
-            // Fallback: end immediately on error
-            if (!hasEndedRef.current) {
-              handleVideoEnded();
-            }
-          }}
-          webkit-playsinline="true"
-          x5-playsinline="true"
-          x5-video-player-type="h5"
-          x5-video-player-fullscreen="true"
+        <div
           style={{
             position: "fixed",
             top: 0,
             left: 0,
             width: "100vw",
             height: "100vh",
-            objectFit: "cover",
+            background: "#000",
             zIndex: 0,
-            pointerEvents: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
-        />
+        >
+          <video
+            ref={videoRef}
+            key="hyperspace-video"
+            className="starfield-video"
+            src={hyperspaceVideo}
+            autoPlay
+            playsInline
+            preload="metadata"
+            controlsList="nodownload"
+            onLoadStart={() => {
+              console.log('Video loading started');
+              if (videoRef.current) {
+                videoRef.current.loop = false;
+              }
+            }}
+            onLoadedMetadata={(e) => {
+              console.log('Video metadata loaded, duration:', e.target.duration);
+              e.target.loop = false;
+            }}
+            onCanPlay={(e) => {
+              console.log('Video can play');
+              e.target.loop = false;
+            }}
+            onPlay={(e) => {
+              console.log('Video playing');
+            }}
+            onEnded={handleVideoEnded}
+            onTimeUpdate={(e) => {
+              if (hasEndedRef.current === false && e.target.duration > 0) {
+                if (e.target.currentTime > e.target.duration * 0.95) {
+                  e.target._nearEnd = true;
+                } else if (e.target._nearEnd && e.target.currentTime < 1 && e.target.played.length > 0) {
+                  console.log('Video attempting to loop - stopping it');
+                  handleVideoEnded();
+                }
+              }
+            }}
+            onError={(e) => {
+              console.error('Video error:', e, e.target.error);
+              if (!hasEndedRef.current) {
+                handleVideoEnded();
+              }
+            }}
+            webkit-playsinline="true"
+            x5-playsinline="true"
+            x5-video-player-type="h5"
+            x5-video-player-fullscreen="true"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
+        </div>
         <canvas ref={canvasRef} style={{ display: "none" }} />
       </>
     );
