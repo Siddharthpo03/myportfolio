@@ -5,51 +5,45 @@ import "./Starfield.css";
 const Starfield = ({ density = 1, hyperspaceMode = false, onVideoEnd }) => {
   const videoRef = React.useRef(null);
   const canvasRef = React.useRef(null);
-  const hasEndedRef = React.useRef(false);
   const timeoutRef = React.useRef(null);
+  const hasEndedRef = React.useRef(false);
 
   React.useEffect(() => {
     if (hyperspaceMode && videoRef.current) {
       const video = videoRef.current;
       hasEndedRef.current = false;
-
+      
+      // Safety timeout - force end after 15 seconds regardless
+      timeoutRef.current = setTimeout(() => {
+        if (!hasEndedRef.current) {
+          console.log('Safety timeout triggered');
+          handleVideoEnded();
+        }
+      }, 15000);
+      
       // Detect mobile
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
+      
       if (isMobile) {
         // On mobile, start muted then unmute after user gesture
         video.muted = true;
-        video
-          .play()
-          .then(() => {
-            // Try to unmute after playback starts
-            setTimeout(() => {
-              video.muted = false;
-            }, 100);
-          })
-          .catch((err) => {
-            console.log("Mobile autoplay handled:", err);
-          });
+        video.play().then(() => {
+          // Try to unmute after playback starts
+          setTimeout(() => {
+            video.muted = false;
+          }, 100);
+        }).catch(err => {
+          console.log('Mobile autoplay handled:', err);
+        });
       } else {
         // Desktop: play with sound
         video.muted = false;
-        video.play().catch((err) => {
-          console.log("Autoplay fallback:", err);
+        video.play().catch(err => {
+          console.log('Autoplay fallback:', err);
           video.muted = true;
           video.play();
         });
       }
-      
-      // Safety timeout: if video doesn't end naturally, force it after 35 seconds
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      timeoutRef.current = setTimeout(() => {
-        if (!hasEndedRef.current) {
-          console.log('Video timeout - forcing end');
-          handleVideoEnded();
-        }
-      }, 35000);
     }
     
     return () => {

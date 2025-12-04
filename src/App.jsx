@@ -69,21 +69,14 @@ function App() {
     const timer2 = setTimeout(() => {
       setLoadingStage("hyperspace");
     }, 6000);
-    // Safety timeout: force end hyperspace after 15s if video doesn't end
-    const safetyTimer = setTimeout(() => {
-      if (loadingStage === "hyperspace") {
-        console.log("Safety timeout: forcing hyperspace end");
-        setLoadingStage("done");
-      }
-    }, 21000); // 6s (start) + 15s (max video duration)
+    // Hyperspace duration controlled by video end event
 
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
-      clearTimeout(safetyTimer);
       document.body.style.overflow = "";
     };
-  }, [startClicked, loadingStage]);
+  }, [startClicked]);
 
   useEffect(() => {
     if (
@@ -200,71 +193,79 @@ function App() {
     return <LoadingScreen />;
   }
 
-  return (
-    <AnimatePresence mode="wait">
-      {loadingStage === "falcon" && <FalconTransition key="falcon" />}
-      {loadingStage === "hyperspace" && (
-        <motion.div
-          key="hyperspace"
-          className="space-view"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1 }}
-        >
-          <Starfield
-            density={0.75}
-            hyperspaceMode={true}
-            onVideoEnd={handleVideoEnd}
+  // Show hyperspace only during that stage
+  if (loadingStage === "falcon") {
+    return <FalconTransition key="falcon" />;
+  }
+
+  if (loadingStage === "hyperspace") {
+    return (
+      <motion.div
+        key="hyperspace"
+        className="space-view"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 1 }}
+      >
+        <Starfield
+          density={0.75}
+          hyperspaceMode={true}
+          onVideoEnd={handleVideoEnd}
+        />
+      </motion.div>
+    );
+  }
+
+  // Show main content after hyperspace
+  if (loadingStage === "done") {
+    return (
+      <motion.div
+        key="content"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        style={{
+          position: "relative",
+        }}
+      >
+        {hyperspaceFrame && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              backgroundImage: `url(${hyperspaceFrame})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              zIndex: -1,
+              opacity: 0.6,
+            }}
           />
-        </motion.div>
-      )}
-      {loadingStage === "done" && (
-        <motion.div
-          key="content"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          style={{
-            position: "relative",
-          }}
-        >
-          {hyperspaceFrame && (
-            <div
-              style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-                backgroundImage: `url(${hyperspaceFrame})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                zIndex: -1,
-                opacity: 0.6,
-              }}
-            />
-          )}
-          {!hyperspaceFrame && (
-            <Starfield density={0.75} hyperspaceMode={false} />
-          )}
-          <UniverseCursor />
-          <Navbar />
-          <PerformanceToggle />
-          <Suspense fallback={<div style={{ minHeight: "100vh" }} />}>
-            <main>
-              <Hero />
-              <About />
-              <Skills />
-              <Projects />
-              <Experience />
-              <Contact />
-            </main>
-          </Suspense>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+        )}
+        {!hyperspaceFrame && (
+          <Starfield density={0.75} hyperspaceMode={false} />
+        )}
+        <UniverseCursor />
+        <Navbar />
+        <PerformanceToggle />
+        <Suspense fallback={<div style={{ minHeight: "100vh" }} />}>
+          <main>
+            <Hero />
+            <About />
+            <Skills />
+            <Projects />
+            <Experience />
+            <Contact />
+          </main>
+        </Suspense>
+      </motion.div>
+    );
+  }
+  
+  return null;
 }
 
 export default App;
